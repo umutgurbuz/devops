@@ -1,0 +1,60 @@
+- name: Case 2 Playbook for Dockerizing and Serving an App
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+   - name: Install Docker
+     yum:
+       name: docker
+       state: latest
+   - name: Install Docker-Compose
+     yum:
+       name: docker-compose
+       state: latest
+   - name: Install Docker SDK for Python
+     pip:
+      name: docker
+      state: latest
+      executable: pip3
+   - name: Install Nginx
+     yum:
+       name: nginx
+       state: latest
+   - name: Install Git
+     yum:
+       name: git
+       state: latest
+   - name: Install nodejs
+     yum:
+       name: nodejs
+       state: latest
+   - name: Clone the Node-Mongodb App
+     git:
+       repo: https://github.com/madhums/node-express-mongoose
+       dest: /home/umut.gurbuz/node_mongoose_app
+       clone: yes
+   - name: Install package dependencies for the application
+     community.general.npm:
+       path: /home/umut.gurbuz/node_mongoose_app/
+   - copy: 
+       src: /home/umut.gurbuz/node_mongoose_app/.env.example
+       dest: /home/umut.gurbuz/node_mongoose_app/.env
+       remote_src: yes
+   - name: Run `docker-compose up`
+     docker_compose:
+       project_src: /home/umut.gurbuz/node_mongoose_app
+       build: no
+     register: output    
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
